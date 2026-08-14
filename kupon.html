@@ -24,223 +24,706 @@
 <div class="container">
 
     <header>
-        <h1>Generator Kupon</h1>
-        <p>Generate kupon dengan nomor otomatis dan nomor double</p>
+        <div class="brand">
+            <img
+                src="assets/logo.png"
+                alt="Logo"
+                class="logo"
+                onerror="this.style.display='none'"
+            >
+            <div>
+                <h1>Generator Kupon</h1>
+                <p>Generate kupon normal dan otomatis</p>
+            </div>
+        </div>
     </header>
 
-    <div class="panel">
-
-        <div class="form-group">
-            <label for="designInput">
-                Desain Kupon
-            </label>
-
-            <input
-                type="file"
-                id="designInput"
-                accept="image/png,image/jpeg,image/jpg,image/webp"
-            >
-
-            <div id="designStatus" class="design-status">
-                Belum ada desain
-            </div>
-        </div>
-
-
-        <div class="row">
-
-            <div class="form-group">
-                <label for="startNumber">
-                    Nomor Awal
-                </label>
-
-                <input
-                    type="number"
-                    id="startNumber"
-                    value="1"
-                    min="0"
-                >
-            </div>
-
-
-            <div class="form-group">
-                <label for="totalNumber">
-                    Total Nomor
-                </label>
-
-                <input
-                    type="number"
-                    id="totalNumber"
-                    value="100"
-                    min="1"
-                >
-            </div>
-
-        </div>
-
-
-        <div class="row">
-
-            <div class="form-group">
-                <label for="columns">
-                    Kolom per A4
-                </label>
-
-                <input
-                    type="number"
-                    id="columns"
-                    value="2"
-                    min="1"
-                    max="10"
-                >
-            </div>
-
-
-            <div class="form-group">
-                <label for="rows">
-                    Baris per A4
-                </label>
-
-                <input
-                    type="number"
-                    id="rows"
-                    value="5"
-                    min="1"
-                    max="20"
-                >
-            </div>
-
-        </div>
-
-
-        <div class="row">
-
-            <div class="form-group">
-                <label for="padding">
-                    Jumlah Digit
-                </label>
-
-                <input
-                    type="number"
-                    id="padding"
-                    value="4"
-                    min="1"
-                    max="10"
-                >
-            </div>
-
-
-            <div class="form-group">
-                <label for="gap">
-                    Gap Kupon (mm)
-                </label>
-
-                <input
-                    type="number"
-                    id="gap"
-                    value="2"
-                    min="0"
-                    step="0.1"
-                >
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="numberPosition">
-                Posisi Nomor
-            </label>
-
-            <select id="numberPosition">
-
-                <option value="auto">
-                    Otomatis Deteksi Desain
-                </option>
-
-                <option value="top-left">
-                    Kiri Atas
-                </option>
-
-                <option value="top-center">
-                    Tengah Atas
-                </option>
-
-                <option value="top-right">
-                    Kanan Atas
-                </option>
-
-                <option value="center">
-                    Tengah
-                </option>
-
-                <option value="bottom-left">
-                    Kiri Bawah
-                </option>
-
-                <option value="bottom-center">
-                    Tengah Bawah
-                </option>
-
-                <option value="bottom-right">
-                    Kanan Bawah
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div id="detectionResult" class="detection-result">
-
-            <i class="bi bi-search"></i>
-
-            <span>
-                Upload desain untuk mendeteksi area nomor.
-            </span>
-
-        </div>
-
-
-        <button id="generateBtn">
-            <i class="bi bi-magic"></i>
-            Generate Kupon
-        </button>
-
+    <div class="mode-switch">
 
         <button
-            id="printBtn"
-            class="secondary"
+            type="button"
+            id="normalModeBtn"
+            class="mode-btn active"
         >
-            <i class="bi bi-printer"></i>
-            Print / Simpan PDF
+            <i class="bi bi-ticket-perforated"></i>
+            Mode Normal
+        </button>
+
+        <button
+            type="button"
+            id="autoModeBtn"
+            class="mode-btn"
+        >
+            <i class="bi bi-magic"></i>
+            Mode Otomatis
         </button>
 
     </div>
 
+    <div id="normalMode" class="mode-content">
+
+        <div class="panel">
+
+            <h2>Generator Normal</h2>
+
+            <div class="form-group">
+
+                <label for="designInput">
+                    Desain Kupon
+                </label>
+
+                <input
+                    type="file"
+                    id="designInput"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                >
+
+                <div id="designStatus" class="design-status">
+                    Belum ada desain
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="startNumber">
+                        Nomor Awal
+                    </label>
+
+                    <input
+                        type="number"
+                        id="startNumber"
+                        value="1"
+                        min="0"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="totalNumber">
+                        Total Nomor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="totalNumber"
+                        value="100"
+                        min="1"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="columns">
+                        Kolom per A4
+                    </label>
+
+                    <input
+                        type="number"
+                        id="columns"
+                        value="2"
+                        min="1"
+                        max="10"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="rows">
+                        Baris per A4
+                    </label>
+
+                    <input
+                        type="number"
+                        id="rows"
+                        value="5"
+                        min="1"
+                        max="30"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="padding">
+                        Jumlah Digit
+                    </label>
+
+                    <input
+                        type="number"
+                        id="padding"
+                        value="3"
+                        min="1"
+                        max="10"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="gap">
+                        Gap Kupon (mm)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="gap"
+                        value="2"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="numberPosition">
+                    Posisi Nomor
+                </label>
+
+                <select id="numberPosition">
+
+                    <option value="top-left">
+                        Kiri Atas
+                    </option>
+
+                    <option value="top-center">
+                        Tengah Atas
+                    </option>
+
+                    <option value="top-right">
+                        Kanan Atas
+                    </option>
+
+                    <option value="center">
+                        Tengah
+                    </option>
+
+                    <option value="bottom-left">
+                        Kiri Bawah
+                    </option>
+
+                    <option value="bottom-center" selected>
+                        Tengah Bawah
+                    </option>
+
+                    <option value="bottom-right">
+                        Kanan Bawah
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button
+                type="button"
+                id="generateNormalBtn"
+            >
+                <i class="bi bi-magic"></i>
+                Generate Normal
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="autoMode" class="mode-content hidden">
+
+        <div class="panel">
+
+            <h2>Generator Otomatis</h2>
+
+            <div class="form-group">
+
+                <label for="autoDesignInput">
+                    Desain Kupon
+                </label>
+
+                <input
+                    type="file"
+                    id="autoDesignInput"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                >
+
+                <div
+                    id="autoDesignStatus"
+                    class="design-status"
+                >
+                    Belum ada desain
+                </div>
+
+            </div>
+
+            <div class="selector-panel">
+
+                <div class="selector-header">
+
+                    <div>
+                        <strong>
+                            Tentukan Titik Nomor
+                        </strong>
+
+                        <p>
+                            Klik atau tap titik tengah area nomor pada desain.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="resetPointsBtn"
+                        class="reset-btn"
+                    >
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Reset
+                    </button>
+
+                </div>
+
+                <div
+                    id="designSelector"
+                    class="design-selector"
+                >
+
+                    <img
+                        id="selectorImage"
+                        src=""
+                        alt="Preview desain"
+                    >
+
+                    <div
+                        id="marker1"
+                        class="marker marker-one"
+                    >
+                        1
+                    </div>
+
+                    <div
+                        id="marker2"
+                        class="marker marker-two"
+                    >
+                        2
+                    </div>
+
+                </div>
+
+                <div
+                    id="selectionStatus"
+                    class="selection-status"
+                >
+                    Upload desain lalu klik lokasi tengah nomor 1.
+                </div>
+
+                <div class="point-info">
+
+                    <div class="point-card">
+
+                        <strong>Titik 1</strong>
+
+                        <span id="point1Text">
+                            Belum dipilih
+                        </span>
+
+                    </div>
+
+                    <div class="point-card">
+
+                        <strong>Titik 2</strong>
+
+                        <span id="point2Text">
+                            Belum dipilih
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoStartNumber">
+                        Nomor Awal
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoStartNumber"
+                        value="1"
+                        min="0"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoTotalNumber">
+                        Total Nomor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoTotalNumber"
+                        value="100"
+                        min="1"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoColumns">
+                        Kolom per A4
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoColumns"
+                        value="4"
+                        min="1"
+                        max="10"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoRows">
+                        Baris per A4
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoRows"
+                        value="15"
+                        min="1"
+                        max="30"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoPadding">
+                        Jumlah Digit
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoPadding"
+                        value="3"
+                        min="1"
+                        max="10"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoFontSize">
+                        Ukuran Nomor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoFontSize"
+                        value="18"
+                        min="6"
+                        max="100"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoGap">
+                        Gap Kupon (mm)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoGap"
+                        value="2"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoFontWeight">
+                        Ketebalan
+                    </label>
+
+                    <select id="autoFontWeight">
+
+                        <option value="400">
+                            Normal
+                        </option>
+
+                        <option value="500">
+                            Medium
+                        </option>
+
+                        <option value="600">
+                            Semi Bold
+                        </option>
+
+                        <option value="700" selected>
+                            Bold
+                        </option>
+
+                        <option value="800">
+                            Extra Bold
+                        </option>
+
+                        <option value="900">
+                            Black
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoTextColor">
+                        Warna Nomor
+                    </label>
+
+                    <input
+                        type="color"
+                        id="autoTextColor"
+                        value="#000000"
+                        class="color-input"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoBackgroundColor">
+                        Warna Background
+                    </label>
+
+                    <input
+                        type="color"
+                        id="autoBackgroundColor"
+                        value="#ffffff"
+                        class="color-input"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoBackgroundOpacity">
+                        Transparansi Background
+                    </label>
+
+                    <input
+                        type="range"
+                        id="autoBackgroundOpacity"
+                        value="100"
+                        min="0"
+                        max="100"
+                        step="1"
+                    >
+
+                    <div
+                        id="autoBackgroundOpacityValue"
+                        class="range-value"
+                    >
+                        100%
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoPaddingBox">
+                        Padding Nomor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoPaddingBox"
+                        value="5"
+                        min="0"
+                        max="50"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group">
+
+                    <label for="autoRadius">
+                        Radius Nomor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="autoRadius"
+                        value="3"
+                        min="0"
+                        max="50"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="autoOrientation">
+                        Orientasi Titik 2
+                    </label>
+
+                    <select id="autoOrientation">
+
+                        <option value="same" selected>
+                            Sama dengan titik 1
+                        </option>
+
+                        <option value="horizontal">
+                            Horizontal / Nyamping
+                        </option>
+
+                        <option value="vertical">
+                            Vertikal
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="form-group checkbox-group">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="autoTransparent"
+                    >
+
+                    Background nomor transparan
+
+                </label>
+
+            </div>
+
+            <div class="auto-preview-box">
+
+                <strong>
+                    Preview Pengaturan Nomor
+                </strong>
+
+                <div
+                    id="numberStylePreview"
+                    class="number-style-preview"
+                >
+                    001
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="generateAutoBtn"
+            >
+                <i class="bi bi-magic"></i>
+                Generate Otomatis
+            </button>
+
+        </div>
+
+    </div>
 
     <div class="info">
 
         <div>
-            <strong id="perPage">10</strong>
-            <span>Kupon per halaman</span>
+
+            <strong id="perPage">
+                10
+            </strong>
+
+            <span>
+                Kupon per halaman
+            </span>
+
         </div>
 
         <div>
-            <strong id="pageCount">1</strong>
-            <span>Total halaman</span>
+
+            <strong id="pageCount">
+                1
+            </strong>
+
+            <span>
+                Total halaman
+            </span>
+
         </div>
 
     </div>
 
-
-    <h2>Preview</h2>
+    <h2>
+        Preview
+    </h2>
 
     <div id="preview"></div>
 
-</div>
+    <button
+        type="button"
+        id="printBtn"
+        class="print-button"
+    >
+        <i class="bi bi-printer"></i>
+        Print / Simpan PDF
+    </button>
 
+</div>
 
 <script src="js/kupon.js"></script>
 

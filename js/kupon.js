@@ -1,4 +1,14 @@
+const normalModeBtn = document.getElementById("normalModeBtn");
+const autoModeBtn = document.getElementById("autoModeBtn");
+
+const normalMode = document.getElementById("normalMode");
+const autoMode = document.getElementById("autoMode");
+
 const designInput = document.getElementById("designInput");
+const autoDesignInput = document.getElementById("autoDesignInput");
+
+const designStatus = document.getElementById("designStatus");
+const autoDesignStatus = document.getElementById("autoDesignStatus");
 
 const startNumber = document.getElementById("startNumber");
 const totalNumber = document.getElementById("totalNumber");
@@ -11,585 +21,387 @@ const gap = document.getElementById("gap");
 
 const numberPosition = document.getElementById("numberPosition");
 
-const generateBtn = document.getElementById("generateBtn");
-const printBtn = document.getElementById("printBtn");
+const autoStartNumber = document.getElementById("autoStartNumber");
+const autoTotalNumber = document.getElementById("autoTotalNumber");
+const autoPadding = document.getElementById("autoPadding");
+const autoFontSize = document.getElementById("autoFontSize");
+const autoColumns = document.getElementById("autoColumns");
+const autoRows = document.getElementById("autoRows");
+const autoGap = document.getElementById("autoGap");
 
-const preview = document.getElementById("preview");
+const autoFontWeight =
+    document.getElementById("autoFontWeight");
 
-const perPageText = document.getElementById("perPage");
-const pageCountText = document.getElementById("pageCount");
+const autoTextColor =
+    document.getElementById("autoTextColor");
 
-const designStatus = document.getElementById("designStatus");
-const detectionResult = document.getElementById("detectionResult");
+const autoBackgroundColor =
+    document.getElementById("autoBackgroundColor");
 
+const autoBackgroundOpacity =
+    document.getElementById("autoBackgroundOpacity");
 
-let designURL = null;
+const autoBackgroundOpacityValue =
+    document.getElementById("autoBackgroundOpacityValue");
 
-let designImage = null;
+const autoPaddingBox =
+    document.getElementById("autoPaddingBox");
 
-let detectedNumberBox = null;
+const autoRadius =
+    document.getElementById("autoRadius");
 
+const autoOrientation =
+    document.getElementById("autoOrientation");
 
-/* =========================
-   UPLOAD DESAIN
-========================= */
+const autoTransparent =
+    document.getElementById("autoTransparent");
 
-designInput.addEventListener("change", function () {
+const numberStylePreview =
+    document.getElementById("numberStylePreview");
 
-    const file = this.files[0];
+const generateNormalBtn =
+    document.getElementById("generateNormalBtn");
 
-    if (!file) {
+const generateAutoBtn =
+    document.getElementById("generateAutoBtn");
+
+const printBtn =
+    document.getElementById("printBtn");
+
+const preview =
+    document.getElementById("preview");
+
+const perPageText =
+    document.getElementById("perPage");
+
+const pageCountText =
+    document.getElementById("pageCount");
+
+const designSelector =
+    document.getElementById("designSelector");
+
+const selectorImage =
+    document.getElementById("selectorImage");
+
+const marker1 =
+    document.getElementById("marker1");
+
+const marker2 =
+    document.getElementById("marker2");
+
+const selectionStatus =
+    document.getElementById("selectionStatus");
+
+const point1Text =
+    document.getElementById("point1Text");
+
+const point2Text =
+    document.getElementById("point2Text");
+
+const resetPointsBtn =
+    document.getElementById("resetPointsBtn");
+
+let normalDesignURL = null;
+let autoDesignURL = null;
+
+let point1 = null;
+let point2 = null;
+
+let currentPoint = 1;
+
+function setMode(mode) {
+
+    if (mode === "normal") {
+
+        normalModeBtn.classList.add("active");
+        autoModeBtn.classList.remove("active");
+
+        normalMode.classList.remove("hidden");
+        autoMode.classList.add("hidden");
+
+    } else {
+
+        normalModeBtn.classList.remove("active");
+        autoModeBtn.classList.add("active");
+
+        normalMode.classList.add("hidden");
+        autoMode.classList.remove("hidden");
+    }
+}
+
+normalModeBtn.addEventListener(
+    "click",
+    function () {
+        setMode("normal");
+    }
+);
+
+autoModeBtn.addEventListener(
+    "click",
+    function () {
+        setMode("auto");
+    }
+);
+
+designInput.addEventListener(
+    "change",
+    function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (normalDesignURL) {
+            URL.revokeObjectURL(normalDesignURL);
+        }
+
+        normalDesignURL =
+            URL.createObjectURL(file);
+
+        designStatus.textContent =
+            `Desain: ${file.name}`;
+    }
+);
+
+autoDesignInput.addEventListener(
+    "change",
+    function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (autoDesignURL) {
+            URL.revokeObjectURL(autoDesignURL);
+        }
+
+        autoDesignURL =
+            URL.createObjectURL(file);
+
+        autoDesignStatus.textContent =
+            `Desain: ${file.name}`;
+
+        selectorImage.src =
+            autoDesignURL;
+
+        selectorImage.onload =
+            function () {
+
+                designSelector.classList.add(
+                    "has-image"
+                );
+
+                resetPoints();
+            };
+    }
+);
+
+designSelector.addEventListener(
+    "pointerdown",
+    function (event) {
+
+        if (
+            !autoDesignURL ||
+            !designSelector.classList.contains(
+                "has-image"
+            )
+        ) {
+            return;
+        }
+
+        const rect =
+            selectorImage.getBoundingClientRect();
+
+        if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+        ) {
+            return;
+        }
+
+        const x =
+            event.clientX - rect.left;
+
+        const y =
+            event.clientY - rect.top;
+
+        const xPercent =
+            (x / rect.width) * 100;
+
+        const yPercent =
+            (y / rect.height) * 100;
+
+        setSelectedPoint(
+            currentPoint,
+            xPercent,
+            yPercent
+        );
+
+        if (currentPoint === 1) {
+            currentPoint = 2;
+        } else {
+            currentPoint = 1;
+        }
+
+        event.preventDefault();
+    }
+);
+
+function setSelectedPoint(
+    pointNumber,
+    xPercent,
+    yPercent
+) {
+
+    const point = {
+        x: xPercent,
+        y: yPercent
+    };
+
+    if (pointNumber === 1) {
+
+        point1 = point;
+
+        marker1.style.left =
+            `${xPercent}%`;
+
+        marker1.style.top =
+            `${yPercent}%`;
+
+        marker1.classList.add("active");
+
+        point1Text.textContent =
+            `${formatPercent(xPercent)}% × ${formatPercent(yPercent)}%`;
+
+    } else {
+
+        point2 = point;
+
+        marker2.style.left =
+            `${xPercent}%`;
+
+        marker2.style.top =
+            `${yPercent}%`;
+
+        marker2.classList.add("active");
+
+        point2Text.textContent =
+            `${formatPercent(xPercent)}% × ${formatPercent(yPercent)}%`;
+    }
+
+    updateSelectionStatus();
+}
+
+function formatPercent(value) {
+    return Number(value).toFixed(2);
+}
+
+function updateSelectionStatus() {
+
+    if (point1 && point2) {
+
+        selectionStatus.classList.add("ready");
+
+        selectionStatus.textContent =
+            "2 titik sudah dipilih. Desain siap digunakan.";
+
         return;
     }
 
-    if (designURL) {
-        URL.revokeObjectURL(designURL);
+    selectionStatus.classList.remove("ready");
+
+    if (point1) {
+
+        selectionStatus.textContent =
+            "Titik 1 sudah dipilih. Sekarang pilih titik 2.";
+
+        return;
     }
 
-    designURL = URL.createObjectURL(file);
-
-    designStatus.textContent =
-        `Desain: ${file.name}`;
-
-    detectionResult.className =
-        "detection-result";
-
-    detectionResult.innerHTML =
-        `<i class="bi bi-hourglass-split"></i>
-         <span>Menganalisis desain...</span>`;
-
-    const image = new Image();
-
-    image.onload = function () {
-
-        designImage = image;
-
-        detectedNumberBox =
-            detectNumberArea(image);
-
-        if (detectedNumberBox) {
-
-            detectionResult.className =
-                "detection-result success";
-
-            detectionResult.innerHTML =
-                `<i class="bi bi-check-circle"></i>
-                 <span>
-                    Area nomor berhasil dideteksi secara otomatis.
-                 </span>`;
-
-        } else {
-
-            detectionResult.className =
-                "detection-result warning";
-
-            detectionResult.innerHTML =
-                `<i class="bi bi-exclamation-circle"></i>
-                 <span>
-                    Area nomor tidak terdeteksi. Posisi manual akan digunakan.
-                 </span>`;
-        }
-    };
-
-    image.onerror = function () {
-
-        designImage = null;
-
-        detectedNumberBox = null;
-
-        detectionResult.className =
-            "detection-result error";
-
-        detectionResult.innerHTML =
-            `<i class="bi bi-x-circle"></i>
-             <span>
-                Desain gagal dibaca.
-             </span>`;
-    };
-
-    image.src = designURL;
-});
-
-
-/* =========================
-   DETEKSI AREA NOMOR
-========================= */
-
-function detectNumberArea(image) {
-
-    const canvas = document.createElement("canvas");
-
-    const maxSize = 1000;
-
-    let width = image.naturalWidth;
-    let height = image.naturalHeight;
-
-    const scale =
-        Math.min(1, maxSize / Math.max(width, height));
-
-    width = Math.max(1, Math.round(width * scale));
-    height = Math.max(1, Math.round(height * scale));
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d", {
-        willReadFrequently: true
-    });
-
-    ctx.drawImage(
-        image,
-        0,
-        0,
-        width,
-        height
-    );
-
-    const imageData =
-        ctx.getImageData(
-            0,
-            0,
-            width,
-            height
-        );
-
-    const data = imageData.data;
-
-
-    /*
-     * Membuat peta pixel gelap.
-     *
-     * Garis kotak / garis putus-putus
-     * biasanya mempunyai pixel yang jauh
-     * lebih gelap dibanding area kosong.
-     */
-
-    const darkMap =
-        new Uint8Array(width * height);
-
-
-    for (let y = 0; y < height; y++) {
-
-        for (let x = 0; x < width; x++) {
-
-            const index =
-                (y * width + x) * 4;
-
-            const r = data[index];
-            const g = data[index + 1];
-            const b = data[index + 2];
-            const a = data[index + 3];
-
-            if (a < 80) {
-                continue;
-            }
-
-            const brightness =
-                (r + g + b) / 3;
-
-            if (brightness < 120) {
-
-                darkMap[y * width + x] = 1;
-            }
-        }
-    }
-
-
-    /*
-     * Cari kandidat garis horizontal.
-     */
-
-    const horizontalLines = [];
-
-    for (let y = 0; y < height; y++) {
-
-        let count = 0;
-
-        for (let x = 0; x < width; x++) {
-
-            if (darkMap[y * width + x]) {
-                count++;
-            }
-        }
-
-        const ratio =
-            count / width;
-
-        if (ratio >= 0.08 && ratio <= 0.85) {
-
-            horizontalLines.push(y);
-        }
-    }
-
-
-    /*
-     * Cari kandidat garis vertikal.
-     */
-
-    const verticalLines = [];
-
-    for (let x = 0; x < width; x++) {
-
-        let count = 0;
-
-        for (let y = 0; y < height; y++) {
-
-            if (darkMap[y * width + x]) {
-                count++;
-            }
-        }
-
-        const ratio =
-            count / height;
-
-        if (ratio >= 0.08 && ratio <= 0.85) {
-
-            verticalLines.push(x);
-        }
-    }
-
-
-    const horizontalGroups =
-        groupNearbyValues(horizontalLines);
-
-    const verticalGroups =
-        groupNearbyValues(verticalLines);
-
-
-    const horizontalCenters =
-        horizontalGroups.map(group =>
-            average(group)
-        );
-
-    const verticalCenters =
-        verticalGroups.map(group =>
-            average(group)
-        );
-
-
-    /*
-     * Membentuk kandidat kotak dari
-     * perpotongan garis horizontal
-     * dan vertikal.
-     */
-
-    const candidates = [];
-
-
-    for (let i = 0; i < horizontalCenters.length; i++) {
-
-        for (let j = i + 1; j < horizontalCenters.length; j++) {
-
-            const top =
-                horizontalCenters[i];
-
-            const bottom =
-                horizontalCenters[j];
-
-            const boxHeight =
-                bottom - top;
-
-            if (boxHeight < height * 0.03) {
-                continue;
-            }
-
-            if (boxHeight > height * 0.5) {
-                continue;
-            }
-
-
-            for (let a = 0; a < verticalCenters.length; a++) {
-
-                for (let b = a + 1; b < verticalCenters.length; b++) {
-
-                    const left =
-                        verticalCenters[a];
-
-                    const right =
-                        verticalCenters[b];
-
-                    const boxWidth =
-                        right - left;
-
-                    if (boxWidth < width * 0.03) {
-                        continue;
-                    }
-
-                    if (boxWidth > width * 0.7) {
-                        continue;
-                    }
-
-
-                    const ratio =
-                        boxWidth / boxHeight;
-
-
-                    /*
-                     * Area nomor biasanya
-                     * berbentuk rectangle.
-                     */
-
-                    if (ratio < 0.2 || ratio > 8) {
-                        continue;
-                    }
-
-
-                    /*
-                     * Jangan mengambil border
-                     * luar gambar.
-                     */
-
-                    const margin = width * 0.03;
-
-                    if (left < margin) {
-                        continue;
-                    }
-
-                    if (right > width - margin) {
-                        continue;
-                    }
-
-                    if (top < height * 0.03) {
-                        continue;
-                    }
-
-                    if (bottom > height * 0.97) {
-                        continue;
-                    }
-
-
-                    candidates.push({
-                        left,
-                        top,
-                        right,
-                        bottom,
-                        width: boxWidth,
-                        height: boxHeight
-                    });
-                }
-            }
-        }
-    }
-
-
-    if (!candidates.length) {
-        return null;
-    }
-
-
-    /*
-     * Nilai kandidat.
-     *
-     * Kita lebih menyukai kotak:
-     *
-     * - tidak terlalu besar
-     * - cukup jelas
-     * - berada di area desain
-     */
-
-    candidates.forEach(candidate => {
-
-        const area =
-            candidate.width *
-            candidate.height;
-
-        const imageArea =
-            width * height;
-
-        const areaRatio =
-            area / imageArea;
-
-
-        let score = 0;
-
-
-        /*
-         * Kotak kecil sampai menengah
-         * lebih mungkin menjadi area nomor.
-         */
-
-        if (areaRatio >= 0.005 &&
-            areaRatio <= 0.25) {
-
-            score += 30;
-        }
-
-
-        /*
-         * Rasio kupon nomor biasanya
-         * tidak terlalu ekstrem.
-         */
-
-        const ratio =
-            candidate.width /
-            candidate.height;
-
-        if (ratio >= 0.5 &&
-            ratio <= 5) {
-
-            score += 20;
-        }
-
-
-        /*
-         * Area dekat bagian bawah
-         * atau samping sering digunakan
-         * untuk nomor kupon.
-         */
-
-        const centerX =
-            (candidate.left +
-             candidate.right) / 2;
-
-        const centerY =
-            (candidate.top +
-             candidate.bottom) / 2;
-
-
-        const normalizedX =
-            centerX / width;
-
-        const normalizedY =
-            centerY / height;
-
-
-        if (normalizedY > 0.5) {
-            score += 10;
-        }
-
-        if (normalizedX > 0.5) {
-            score += 10;
-        }
-
-
-        /*
-         * Hindari kotak yang terlalu dekat
-         * dengan tepi desain.
-         */
-
-        const edgeDistance =
-            Math.min(
-                candidate.left,
-                width - candidate.right,
-                candidate.top,
-                height - candidate.bottom
-            );
-
-
-        if (edgeDistance > width * 0.05) {
-            score += 15;
-        }
-
-
-        candidate.score = score;
-    });
-
-
-    candidates.sort(
-        (a, b) => b.score - a.score
-    );
-
-
-    const best =
-        candidates[0];
-
-
-    if (!best || best.score < 40) {
-        return null;
-    }
-
-
-    /*
-     * Kembalikan posisi dalam
-     * koordinat persentase.
-     */
-
-    return {
-        left:
-            (best.left / width) * 100,
-
-        top:
-            (best.top / height) * 100,
-
-        width:
-            (best.width / width) * 100,
-
-        height:
-            (best.height / height) * 100
-    };
+    selectionStatus.textContent =
+        "Klik atau tap lokasi tengah nomor 1 untuk memilih titik pertama.";
 }
 
+function resetPoints() {
 
-/* =========================
-   GROUP PIXEL
-========================= */
+    point1 = null;
+    point2 = null;
+    currentPoint = 1;
 
-function groupNearbyValues(values) {
+    marker1.classList.remove("active");
+    marker2.classList.remove("active");
 
-    if (!values.length) {
-        return [];
-    }
+    point1Text.textContent =
+        "Belum dipilih";
 
-    const groups = [];
+    point2Text.textContent =
+        "Belum dipilih";
 
-    let current = [values[0]];
-
-    for (let i = 1; i < values.length; i++) {
-
-        const previous =
-            values[i - 1];
-
-        const currentValue =
-            values[i];
-
-        if (currentValue - previous <= 3) {
-
-            current.push(currentValue);
-
-        } else {
-
-            groups.push(current);
-
-            current = [currentValue];
-        }
-    }
-
-    groups.push(current);
-
-    return groups;
+    updateSelectionStatus();
 }
 
-
-/* =========================
-   AVERAGE
-========================= */
-
-function average(values) {
-
-    if (!values.length) {
-        return 0;
-    }
-
-    return values.reduce(
-        (sum, value) => sum + value,
-        0
-    ) / values.length;
-}
-
-
-/* =========================
-   GENERATE
-========================= */
-
-generateBtn.addEventListener(
+resetPointsBtn.addEventListener(
     "click",
-    generateCoupons
+    resetPoints
 );
 
+generateNormalBtn.addEventListener(
+    "click",
+    generateNormalCoupons
+);
 
-function generateCoupons() {
+generateAutoBtn.addEventListener(
+    "click",
+    generateAutoCoupons
+);
 
-    if (!designURL) {
+function getNumberValue(
+    element,
+    defaultValue,
+    minimum
+) {
+
+    const value =
+        parseInt(element.value);
+
+    if (Number.isNaN(value)) {
+        return defaultValue;
+    }
+
+    return Math.max(
+        minimum,
+        value
+    );
+}
+
+function getFloatValue(
+    element,
+    defaultValue,
+    minimum
+) {
+
+    const value =
+        parseFloat(element.value);
+
+    if (Number.isNaN(value)) {
+        return defaultValue;
+    }
+
+    return Math.max(
+        minimum,
+        value
+    );
+}
+
+function generateNormalCoupons() {
+
+    if (!normalDesignURL) {
 
         alert(
             "Silakan upload desain kupon terlebih dahulu."
@@ -598,89 +410,67 @@ function generateCoupons() {
         return;
     }
 
-
     const start =
-        Math.max(
-            0,
-            parseInt(startNumber.value) || 1
+        getNumberValue(
+            startNumber,
+            1,
+            0
         );
-
 
     const total =
-        Math.max(
+        getNumberValue(
+            totalNumber,
             1,
-            parseInt(totalNumber.value) || 1
+            1
         );
-
 
     const cols =
-        Math.max(
-            1,
-            parseInt(columns.value) || 1
+        getNumberValue(
+            columns,
+            2,
+            1
         );
-
 
     const rws =
-        Math.max(
-            1,
-            parseInt(rows.value) || 1
+        getNumberValue(
+            rows,
+            5,
+            1
         );
-
 
     const paddingLength =
-        Math.max(
-            1,
-            parseInt(padding.value) || 1
+        getNumberValue(
+            padding,
+            3,
+            1
         );
-
 
     const gapMM =
-        Math.max(
-            0,
-            parseFloat(gap.value) || 0
+        getFloatValue(
+            gap,
+            2,
+            0
         );
-
 
     const position =
         numberPosition.value;
 
-
     const couponsPerPage =
         cols * rws;
 
-
-    /*
-     * PENTING:
-     *
-     * Total Nomor = nomor unik.
-     *
-     * Setiap nomor dicetak 2 kali.
-     */
-
-    const totalCoupons =
-        total * 2;
-
-
     const totalPages =
         Math.ceil(
-            totalCoupons /
-            couponsPerPage
+            total / couponsPerPage
         );
 
-
-    perPageText.textContent =
-        couponsPerPage;
-
-
-    pageCountText.textContent =
-        totalPages;
-
+    updatePageInfo(
+        couponsPerPage,
+        totalPages
+    );
 
     preview.innerHTML = "";
 
-
     let couponIndex = 0;
-
 
     for (
         let page = 0;
@@ -689,24 +479,11 @@ function generateCoupons() {
     ) {
 
         const pageElement =
-            document.createElement("div");
-
-
-        pageElement.className =
-            "a4-page";
-
-
-        pageElement.style.gridTemplateColumns =
-            `repeat(${cols}, 1fr)`;
-
-
-        pageElement.style.gridTemplateRows =
-            `repeat(${rws}, 1fr)`;
-
-
-        pageElement.style.gap =
-            `${gapMM}mm`;
-
+            createPage(
+                cols,
+                rws,
+                gapMM
+            );
 
         for (
             let i = 0;
@@ -714,134 +491,410 @@ function generateCoupons() {
             i++
         ) {
 
-
-            if (
-                couponIndex >=
-                totalCoupons
-            ) {
-
+            if (couponIndex >= total) {
                 break;
             }
 
-
-            const coupon =
-                document.createElement("div");
-
-
-            coupon.className =
-                "coupon";
-
-
-            const image =
-                document.createElement("img");
-
-
-            image.src =
-                designURL;
-
-
-            coupon.appendChild(image);
-
-
-            /*
-             * Nomor naik setiap 2 kupon.
-             *
-             * 0 / 2 = 0
-             * 1 / 2 = 0
-             * 2 / 2 = 1
-             * 3 / 2 = 1
-             */
-
             const currentNumber =
-                start +
-                Math.floor(
-                    couponIndex / 2
-                );
-
+                start + couponIndex;
 
             const formattedNumber =
-                String(currentNumber)
-                .padStart(
-                    paddingLength,
-                    "0"
+                formatNumber(
+                    currentNumber,
+                    paddingLength
                 );
 
+            const coupon =
+                createCoupon(
+                    normalDesignURL
+                );
 
             const number =
                 document.createElement("div");
 
-
             number.className =
                 "coupon-number";
-
 
             number.textContent =
                 formattedNumber;
 
-
-            /*
-             * AUTO DETECT
-             */
-
-            if (
-                position === "auto" &&
-                detectedNumberBox
-            ) {
-
-                number.classList.add(
-                    "auto-number"
-                );
-
-
-                number.style.left =
-                    `${detectedNumberBox.left}%`;
-
-
-                number.style.top =
-                    `${detectedNumberBox.top}%`;
-
-
-                number.style.width =
-                    `${detectedNumberBox.width}%`;
-
-
-                number.style.height =
-                    `${detectedNumberBox.height}%`;
-
-
-            } else {
-
-                /*
-                 * FALLBACK MANUAL
-                 */
-
-                number.classList.add(
-                    position === "auto"
-                        ? "bottom-right"
-                        : position
-                );
-            }
-
+            number.classList.add(
+                position
+            );
 
             coupon.appendChild(number);
-
             pageElement.appendChild(coupon);
-
 
             couponIndex++;
         }
 
-
-        preview.appendChild(
-            pageElement
-        );
+        preview.appendChild(pageElement);
     }
+
+    scrollToPreview();
 }
 
+function generateAutoCoupons() {
 
-/* =========================
-   PRINT / PDF
-========================= */
+    if (!autoDesignURL) {
+
+        alert(
+            "Silakan upload desain kupon terlebih dahulu."
+        );
+
+        return;
+    }
+
+    if (!point1 || !point2) {
+
+        alert(
+            "Silakan pilih 2 titik nomor terlebih dahulu."
+        );
+
+        return;
+    }
+
+    const start =
+        getNumberValue(
+            autoStartNumber,
+            1,
+            0
+        );
+
+    const total =
+        getNumberValue(
+            autoTotalNumber,
+            1,
+            1
+        );
+
+    const paddingLength =
+        getNumberValue(
+            autoPadding,
+            3,
+            1
+        );
+
+    const fontSize =
+        getNumberValue(
+            autoFontSize,
+            18,
+            6
+        );
+
+    const cols =
+        getNumberValue(
+            autoColumns,
+            4,
+            1
+        );
+
+    const rws =
+        getNumberValue(
+            autoRows,
+            15,
+            1
+        );
+
+    const gapMM =
+        getFloatValue(
+            autoGap,
+            2,
+            0
+        );
+
+    const fontWeight =
+        autoFontWeight.value;
+
+    const textColor =
+        autoTextColor.value;
+
+    const backgroundColor =
+        autoBackgroundColor.value;
+
+    const backgroundOpacity =
+        getNumberValue(
+            autoBackgroundOpacity,
+            100,
+            0
+        );
+
+    const boxPadding =
+        getNumberValue(
+            autoPaddingBox,
+            5,
+            0
+        );
+
+    const radius =
+        getNumberValue(
+            autoRadius,
+            3,
+            0
+        );
+
+    const orientation =
+        autoOrientation.value;
+
+    const transparent =
+        autoTransparent.checked;
+
+    const couponsPerPage =
+        cols * rws;
+
+    const totalPages =
+        Math.ceil(
+            total / couponsPerPage
+        );
+
+    updatePageInfo(
+        couponsPerPage,
+        totalPages
+    );
+
+    preview.innerHTML = "";
+
+    let couponIndex = 0;
+
+    for (
+        let page = 0;
+        page < totalPages;
+        page++
+    ) {
+
+        const pageElement =
+            createPage(
+                cols,
+                rws,
+                gapMM
+            );
+
+        for (
+            let i = 0;
+            i < couponsPerPage;
+            i++
+        ) {
+
+            if (couponIndex >= total) {
+                break;
+            }
+
+            const currentNumber =
+                start + couponIndex;
+
+            const formattedNumber =
+                formatNumber(
+                    currentNumber,
+                    paddingLength
+                );
+
+            const coupon =
+                createCoupon(
+                    autoDesignURL
+                );
+
+            createAutoNumber(
+                coupon,
+                formattedNumber,
+                point1,
+                fontSize,
+                fontWeight,
+                textColor,
+                backgroundColor,
+                backgroundOpacity,
+                boxPadding,
+                radius,
+                false,
+                transparent
+            );
+
+            createAutoNumber(
+                coupon,
+                formattedNumber,
+                point2,
+                fontSize,
+                fontWeight,
+                textColor,
+                backgroundColor,
+                backgroundOpacity,
+                boxPadding,
+                radius,
+                orientation === "horizontal",
+                transparent
+            );
+
+            pageElement.appendChild(coupon);
+
+            couponIndex++;
+        }
+
+        preview.appendChild(pageElement);
+    }
+
+    scrollToPreview();
+}
+
+function createPage(
+    cols,
+    rows,
+    gapMM
+) {
+
+    const page =
+        document.createElement("div");
+
+    page.className =
+        "a4-page";
+
+    page.style.gridTemplateColumns =
+        `repeat(${cols}, 1fr)`;
+
+    page.style.gridTemplateRows =
+        `repeat(${rows}, 1fr)`;
+
+    page.style.gap =
+        `${gapMM}mm`;
+
+    return page;
+}
+
+function createCoupon(imageURL) {
+
+    const coupon =
+        document.createElement("div");
+
+    coupon.className =
+        "coupon";
+
+    const image =
+        document.createElement("img");
+
+    image.src =
+        imageURL;
+
+    coupon.appendChild(image);
+
+    return coupon;
+}
+
+function createAutoNumber(
+    coupon,
+    text,
+    point,
+    fontSize,
+    fontWeight,
+    textColor,
+    backgroundColor,
+    backgroundOpacity,
+    boxPadding,
+    radius,
+    horizontal,
+    transparent
+) {
+
+    const number =
+        document.createElement("div");
+
+    number.className =
+        "coupon-number auto-number";
+
+    if (horizontal) {
+        number.classList.add("horizontal");
+    }
+
+    number.textContent =
+        text;
+
+    number.style.left =
+        `${point.x}%`;
+
+    number.style.top =
+        `${point.y}%`;
+
+    number.style.fontSize =
+        `${fontSize}px`;
+
+    number.style.fontWeight =
+        fontWeight;
+
+    number.style.color =
+        textColor;
+
+    number.style.padding =
+        `${boxPadding}px`;
+
+    number.style.borderRadius =
+        `${radius}px`;
+
+    if (transparent) {
+
+        number.style.background =
+            "transparent";
+
+    } else {
+
+        number.style.background =
+            hexToRgba(
+                backgroundColor,
+                backgroundOpacity / 100
+            );
+    }
+
+    coupon.appendChild(number);
+}
+
+function hexToRgba(
+    hex,
+    alpha
+) {
+
+    const clean =
+        hex.replace("#", "");
+
+    const r =
+        parseInt(
+            clean.substring(0, 2),
+            16
+        );
+
+    const g =
+        parseInt(
+            clean.substring(2, 4),
+            16
+        );
+
+    const b =
+        parseInt(
+            clean.substring(4, 6),
+            16
+        );
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function formatNumber(
+    number,
+    paddingLength
+) {
+
+    return String(number)
+        .padStart(
+            paddingLength,
+            "0"
+        );
+}
+
+function updatePageInfo(
+    perPage,
+    pages
+) {
+
+    perPageText.textContent =
+        perPage;
+
+    pageCountText.textContent =
+        pages;
+}
 
 printBtn.addEventListener(
     "click",
@@ -858,83 +911,187 @@ printBtn.addEventListener(
             return;
         }
 
-
         window.print();
     }
 );
 
+function scrollToPreview() {
 
-/* =========================
-   UPDATE INFO
-========================= */
+    setTimeout(
+        function () {
 
-function updateInfo() {
+            preview.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
 
-    const cols =
-        Math.max(
-            1,
-            parseInt(columns.value) || 1
-        );
-
-
-    const rws =
-        Math.max(
-            1,
-            parseInt(rows.value) || 1
-        );
-
-
-    const total =
-        Math.max(
-            1,
-            parseInt(totalNumber.value) || 1
-        );
-
-
-    const perPage =
-        cols * rws;
-
-
-    /*
-     * Setiap nomor = 2 kupon.
-     */
-
-    const totalCoupons =
-        total * 2;
-
-
-    const pages =
-        Math.ceil(
-            totalCoupons /
-            perPage
-        );
-
-
-    perPageText.textContent =
-        perPage;
-
-
-    pageCountText.textContent =
-        pages;
+        },
+        100
+    );
 }
 
+function updateNumberStylePreview() {
+
+    const fontSize =
+        getNumberValue(
+            autoFontSize,
+            18,
+            6
+        );
+
+    const fontWeight =
+        autoFontWeight.value;
+
+    const textColor =
+        autoTextColor.value;
+
+    const backgroundColor =
+        autoBackgroundColor.value;
+
+    const opacity =
+        getNumberValue(
+            autoBackgroundOpacity,
+            100,
+            0
+        );
+
+    const paddingValue =
+        getNumberValue(
+            autoPaddingBox,
+            5,
+            0
+        );
+
+    const radiusValue =
+        getNumberValue(
+            autoRadius,
+            3,
+            0
+        );
+
+    numberStylePreview.style.fontSize =
+        `${fontSize}px`;
+
+    numberStylePreview.style.fontWeight =
+        fontWeight;
+
+    numberStylePreview.style.color =
+        textColor;
+
+    numberStylePreview.style.padding =
+        `${paddingValue}px`;
+
+    numberStylePreview.style.borderRadius =
+        `${radiusValue}px`;
+
+    if (autoTransparent.checked) {
+
+        numberStylePreview.style.background =
+            "transparent";
+
+    } else {
+
+        numberStylePreview.style.background =
+            hexToRgba(
+                backgroundColor,
+                opacity / 100
+            );
+    }
+
+    numberStylePreview.textContent =
+        formatNumber(
+            getNumberValue(
+                autoStartNumber,
+                1,
+                0
+            ),
+            getNumberValue(
+                autoPadding,
+                3,
+                1
+            )
+        );
+}
+
+[
+    autoFontSize,
+    autoFontWeight,
+    autoTextColor,
+    autoBackgroundColor,
+    autoBackgroundOpacity,
+    autoPaddingBox,
+    autoRadius,
+    autoTransparent,
+    autoStartNumber,
+    autoPadding
+].forEach(
+    element => {
+
+        element.addEventListener(
+            "input",
+            updateNumberStylePreview
+        );
+
+        element.addEventListener(
+            "change",
+            updateNumberStylePreview
+        );
+    }
+);
+
+autoBackgroundOpacity.addEventListener(
+    "input",
+    function () {
+
+        autoBackgroundOpacityValue.textContent =
+            `${autoBackgroundOpacity.value}%`;
+
+        updateNumberStylePreview();
+    }
+);
 
 columns.addEventListener(
     "input",
-    updateInfo
+    function () {}
 );
-
 
 rows.addEventListener(
     "input",
-    updateInfo
+    function () {}
 );
-
 
 totalNumber.addEventListener(
     "input",
-    updateInfo
+    function () {}
 );
 
+autoColumns.addEventListener(
+    "input",
+    function () {}
+);
 
-updateInfo();
+autoRows.addEventListener(
+    "input",
+    function () {}
+);
+
+autoTotalNumber.addEventListener(
+    "input",
+    function () {}
+);
+
+updateNumberStylePreview();
+
+window.addEventListener(
+    "beforeunload",
+    function () {
+
+        if (normalDesignURL) {
+            URL.revokeObjectURL(normalDesignURL);
+        }
+
+        if (autoDesignURL) {
+            URL.revokeObjectURL(autoDesignURL);
+        }
+    }
+);

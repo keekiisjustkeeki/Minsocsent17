@@ -20,18 +20,19 @@ header {
 }
 
 header h1 {
-    margin-bottom: 5px;
+    margin: 0 0 5px;
 }
 
 header p {
     color: #666;
+    margin: 0;
 }
 
 .panel {
     background: white;
     padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .08);
 }
 
 .form-group {
@@ -51,6 +52,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 15px;
+    background: white;
 }
 
 .row {
@@ -72,9 +74,46 @@ button {
     color: white;
 }
 
+button:hover {
+    opacity: .9;
+}
+
 button.secondary {
     margin-top: 10px;
     background: #555;
+}
+
+.design-status {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.detection-result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: #666;
+    font-size: 13px;
+}
+
+.detection-result.success {
+    background: #edf8f0;
+    color: #237a3b;
+}
+
+.detection-result.warning {
+    background: #fff7e6;
+    color: #946200;
+}
+
+.detection-result.error {
+    background: #fff0f0;
+    color: #b42318;
 }
 
 .info {
@@ -105,24 +144,41 @@ h2 {
     margin-top: 30px;
 }
 
-/* A4 */
+
+/* =========================
+   A4
+========================= */
 
 .a4-page {
     width: 210mm;
     height: 297mm;
+
     background: white;
+
     margin: 20px auto;
+
     padding: 5mm;
-    box-shadow: 0 4px 15px rgba(0,0,0,.15);
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
 
     display: grid;
 
     overflow: hidden;
+
+    break-after: page;
+    page-break-after: always;
 }
+
+
+/* =========================
+   KUPON
+========================= */
 
 .coupon {
     position: relative;
+
     overflow: hidden;
+
     min-width: 0;
     min-height: 0;
 }
@@ -130,28 +186,49 @@ h2 {
 .coupon img {
     width: 100%;
     height: 100%;
+
     object-fit: fill;
+
     display: block;
 }
 
+
+/* =========================
+   NOMOR
+========================= */
+
 .coupon-number {
     position: absolute;
-    z-index: 5;
 
-    background: white;
-    color: black;
+    z-index: 10;
+
+    color: #000;
+
+    background: #fff;
 
     padding: 2px 6px;
 
     font-size: clamp(7px, 1.5vw, 18px);
+
     font-weight: bold;
 
     border-radius: 3px;
 
     line-height: 1;
+
+    white-space: nowrap;
+
+    text-align: center;
+
+    pointer-events: none;
+
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .05);
 }
 
-/* Posisi nomor */
+
+/* =========================
+   POSISI MANUAL
+========================= */
 
 .top-left {
     top: 3%;
@@ -191,7 +268,32 @@ h2 {
     right: 3%;
 }
 
-/* PRINT */
+
+/* =========================
+   AUTO DETECTED NUMBER BOX
+========================= */
+
+.auto-number {
+    transform: none;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    background: transparent;
+
+    box-shadow: none;
+
+    border-radius: 0;
+}
+
+
+/* =========================
+   PRINT
+========================= */
 
 @media print {
 
@@ -217,10 +319,17 @@ h2 {
 
     .a4-page {
         margin: 0;
+
         box-shadow: none;
+
         page-break-after: always;
+        break-after: page;
     }
 
+    .coupon-number {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 }
 
 @page {
@@ -228,7 +337,12 @@ h2 {
     margin: 0;
 }
 
-@media(max-width:700px) {
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
 
     .row {
         grid-template-columns: 1fr;
@@ -236,8 +350,9 @@ h2 {
 
     .a4-page {
         transform-origin: top center;
+
         transform: scale(.45);
+
         margin-bottom: -160mm;
     }
-
 }

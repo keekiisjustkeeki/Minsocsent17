@@ -9,7 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
             name: "TEMEKANIS",
             type: "supported",
             logo: "sponsorship/temekanis.png"
-        }
+        },
+        {
+            name : "SASAKU",
+            type : "supported",
+            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
+        },
+         {
+            name : "SASAKU",
+            type : "supported",
+            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
+        },
+         {
+            name : "SASAKU",
+            type : "supported",
+            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
+        },
     ];
 
     function renderSponsors() {

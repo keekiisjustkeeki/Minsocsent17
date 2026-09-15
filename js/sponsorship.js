@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
          {
             name : "BOYEBAL",
-            type : "supported",
+            type : "Media Partner",
             logo : "sponsorship/file_00000000ff648211aa2398ec11ca841e.png"
         },
         {
             name : "SENTELUK CUP",
             type : "supported",
-            logo : "sponsorship/sentelukcup.png"
+            logo : "sponsorship/Sentelukcup.png"
         }
     ];
 

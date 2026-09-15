@@ -13,18 +13,23 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             name : "SASAKU",
             type : "supported",
-            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
+            logo : "sponsorship/file_00000000f6dc8211969da5e3f1764585.png"
+        },
+         {
+            name : "TJ SPORTS",
+            type : "supported",
+            logo : "sponsorship/file_00000000353c8211b5227131d881b0a4.png"
         },
          {
             name : "SASAKU",
             type : "supported",
-            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
+            logo : "sponsorship/file_00000000ff648211aa2398ec11ca841e.png"
         },
-         {
+        {
             name : "SASAKU",
             type : "supported",
-            logo : "sponsorship/sponsorship/file_00000000f6dc8211969da5e3f1764585.png
-        },
+            logo : "sponsorship/sentelukcup.png"
+        }
     ];
 
     function renderSponsors() {

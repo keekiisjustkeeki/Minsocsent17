@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             logo : "sponsorship/file_00000000ff648211aa2398ec11ca841e.png"
         },
         {
-            name : "SASAKU",
+            name : "SENTELUK CUP",
             type : "supported",
             logo : "sponsorship/sentelukcup.png"
         }
